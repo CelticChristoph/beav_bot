@@ -16,11 +16,12 @@ const client = new disc.Client();
 
 // ----- Info -----------------------------------------------------------------
 // Server
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 // Bot
-const { token } = JSON.parse(fs.readFileSync('./secret/token.json'));
+const { token, ownerID } = JSON.parse(fs.readFileSync('./secret/config.json'));
 console.log(`Using Discord bot API token: ${token}`);
+console.log(`OwnerID is set as: ${ownerID}`);
 
 // ----- Web-server -----------------------------------------------------------
 
@@ -29,8 +30,6 @@ app.get('/', (req, res) => res.send('Hello World!'));
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 // ----- Bot ------------------------------------------------------------------
-client.login(token);
-
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
@@ -40,3 +39,5 @@ client.on('message', (msg) => {
     msg.reply('Pong!');
   }
 });
+
+client.login(token);
