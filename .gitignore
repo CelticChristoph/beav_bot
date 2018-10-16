@@ -1,3 +1,9 @@
+# Ignore modules installed by NPM (install using `npm install`)
 node_modules/
-secret/
+
+# Development environment configs
+.vscode/
 .eslintrc.json
+
+# Wouldn't wanna give away your secrets, would you?
+secret/
