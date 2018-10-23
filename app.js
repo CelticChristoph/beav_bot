@@ -5,38 +5,24 @@ const fs = require('fs');
 // Web server
 const express = require('express');
 
-const app = express();
-
-
 // Discord bot
 const disc = require('discord.js');
 
+// Router from ./routes
+const routes = require('./routes/index');
+
+// ----- Setup ----------------------------------------------------------------
+const app = express();
 const client = new disc.Client();
 
+app.use('/', routes);
 
-// ----- Info -----------------------------------------------------------------
-// Server
-const port = process.env.PORT || 8080;
+module.exports = app;
 
-// Bot
+// ----- Bot Info -------------------------------------------------------------
 const { token, ownerID } = JSON.parse(fs.readFileSync('./secret/config.json'));
 console.log(`Using Discord bot API token: ${token}`);
 console.log(`OwnerID is set as: ${ownerID}`);
-
-// ----- Web-server -----------------------------------------------------------
-
-app.get('/', (req, res) => res.send('Hello World!'));
-
-app.listen(port, () => console.log(`Listening on port ${port}`));
-
-const logSomething = options => ({
-  ...options,
-  anotherOption: 'Hello!',
-});
-
-const options = logSomething({ one: '1', two: '2' });
-
-console.log(options);
 
 // ----- Bot ------------------------------------------------------------------
 client.on('ready', () => {
@@ -49,4 +35,4 @@ client.on('message', (msg) => {
   }
 });
 
-client.login(token);
+// client.login(token);

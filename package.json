@@ -4,6 +4,8 @@
   "description": "Bot for OSU unofficial CS Discord server.",
   "main": "index.js",
   "scripts": {
+    "start": "node ./app.js",
+    "dev": "nodemon --exec node ./server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .js,.jsx",
     "lint-fix": "eslint --ext .js,.jsx --fix"
@@ -36,6 +38,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
+    "nodemon": "^1.18.4",
     "pre-commit": "^1.2.2"
   },
   "pre-commit": [
