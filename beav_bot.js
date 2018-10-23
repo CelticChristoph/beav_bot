@@ -29,6 +29,15 @@ app.get('/', (req, res) => res.send('Hello World!'));
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
+const logSomething = options => ({
+  ...options,
+  anotherOption: 'Hello!',
+});
+
+const options = logSomething({ one: '1', two: '2' });
+
+console.log(options);
+
 // ----- Bot ------------------------------------------------------------------
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);

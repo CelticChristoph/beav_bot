@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ./src/beav_bot.js",
-    "lint-fix": "eslint ./src/beav_bot.js --fix"
+    "lint": "eslint . --ext .js,.jsx",
+    "lint-fix": "eslint --ext .js,.jsx --fix"
   },
   "repository": {
     "type": "git",
@@ -35,6 +35,10 @@
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.11.1"
-  }
+    "eslint-plugin-react": "^7.11.1",
+    "pre-commit": "^1.2.2"
+  },
+  "pre-commit": [
+    "lint"
+  ]
 }
