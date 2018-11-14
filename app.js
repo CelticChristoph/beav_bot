@@ -10,14 +10,17 @@ const disc = require('discord.js');
 
 // Mongo database
 const mongo = require('mongodb');
-const MongoClient = require('mongodb').MongoClient();
+
+// Assertions
+const assert = require('assert');
 
 // Router from ./routes
 const routes = require('./routes/index');
 
+
 // ----- Setup ----------------------------------------------------------------
 const app = express();
-const client = new disc.Client();
+const discClient = new disc.Client();
 
 app.use('/', routes);
 
@@ -29,25 +32,43 @@ console.log(`Using Discord bot API token: ${token}`);
 console.log(`OwnerID is set as: ${ownerID}`);
 
 // ----- Mongo Init -----------------------------------------------------------
-const url = 'mongodb://localhost:27017/mydb'; // CHANGE
+const { MongoClient } = mongo;
+const url = 'mongodb://localhost:27017'; // CHANGE
+const dbName = 'cludgeBot';
 
-console.log(typeof mongo); // DEBUG/TESTING
+// Create a new MongoClient
+const mdbClient = new MongoClient(url);
+let mdb = null;
 
-MongoClient.connect(url, (err, db) => {
-  if (err) throw err;
-  console.log('Database created!');
-  db.close();
+// Use connect method to connect to the Server
+mdbClient.connect((err) => {
+  assert.equal(null, err);
+  console.log('Connected successfully to MongoDB server');
+
+  mdb = mdbClient.db(dbName);
+
+  // Call using a 'shutdown' function?
+  // mdbClient.close();
 });
 
 // ----- Bot ------------------------------------------------------------------
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+discClient.on('ready', () => {
+  console.log(`Logged in as ${discClient.user.tag}!`);
 });
 
-client.on('message', (msg) => {
+discClient.on('message', (msg) => {
   if (msg.content === 'ping') {
     msg.reply('Pong!');
   }
 });
 
-// client.login(token);
+discClient.on('message', (msg) => {
+  if (msg.content === 'add user') {
+    mdb.collection('users').insertOne({ a: 1 }, (err, r) => {
+      assert.equal(null, err);
+      assert.equal(1, r.insertedCount);
+    });
+  }
+});
+
+// discClient.login(token);
