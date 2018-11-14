@@ -82,6 +82,12 @@ discClient.on('ready', () => {
 discClient.on('message', (msg) => {
   if (msg.author === discClient.user) { return -1; }
 
+  if (msg.isMentioned(discClient.user)) {
+    if (msg.content.toLowerCase === 'hi' || 'hey' || 'hello' || 'yo') {
+      msg.reply('Yo.');
+    }
+  }
+
   if (msg.content.startsWith(prefix)) {
     parseCommand(msg);
   }
