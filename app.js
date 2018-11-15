@@ -130,12 +130,11 @@ async function parseCommand(msg) {
       message = await embedXKCD('0');
     } else if (split[1] === 'r') {
       message = await embedXKCD('-1');
-    } else if (!Number.isNaN(split[1])) {
+    } else if (Number.isInteger(+split[1])) {
       message = await embedXKCD(split[1]);
     } else {
-      message = 'Bad format. Usage is `!xkcd <num>` where num is any integer.';
+      message = 'Bad format. Usage is `!xkcd [num][r]` where `num` is an integer, and `r` is random.';
     }
-    console.log(`payload: ${message}`);
     msg.channel.send(message);
   }
 
@@ -149,10 +148,15 @@ discClient.on('ready', () => {
 });
 
 discClient.on('message', (msg) => {
+  const message = msg.content.toLowerCase();
+  console.log(message);
   if (msg.author === discClient.user) { return -1; }
 
   if (msg.isMentioned(discClient.user)) {
-    msg.reply(msg.content);
+    if (message.includes('hello') || message.includes('hi')
+      || message.includes('yo') || message.includes('hey')) {
+      msg.reply('Hey.');
+    }
   }
 
   if (msg.content.startsWith(prefix)) {
