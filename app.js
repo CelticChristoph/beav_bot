@@ -17,15 +17,15 @@ const assert = require('assert');
 // For URL fetching ES6 style.
 const fetch = require('node-fetch');
 
-// Router from ./routes
-const routes = require('./routes/index');
+// Router from ./pages
+const pages = require('./pages/index');
 
 
 // ----- Page Setup -----------------------------------------------------------
 const app = express();
 const discClient = new Client();
 
-app.use('/', routes);
+app.use('/', pages);
 
 module.exports = app;
 
@@ -166,4 +166,4 @@ discClient.on('message', (msg) => {
   return -1;
 });
 
-discClient.login(token);
+// discClient.login(token);
