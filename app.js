@@ -5,6 +5,9 @@ const fs = require('fs');
 // Web server
 const express = require('express');
 
+// Next.js
+const next = require('next');
+
 // Discord bot
 const { Client, RichEmbed } = require('discord.js');
 
@@ -18,21 +21,38 @@ const assert = require('assert');
 const fetch = require('node-fetch');
 
 // Router from ./pages
-const pages = require('./pages/index');
-
+// const pages = require('./pages/index');
+// OLD?
 
 // ----- Page Setup -----------------------------------------------------------
-const app = express();
+const port = process.env.PORT || 8080;
+const dev = process.env.NODE_ENV !== 'production';
+const nextApp = next({ dev, quiet: true });
+const handle = nextApp.getRequestHandler();
+
 const discClient = new Client();
 
-app.use('/', pages);
+nextApp.prepare()
+  .then(() => {
+    const server = express();
 
-module.exports = app;
+    server.get('*', (req, res) => handle(req, res));
+
+    server.listen(port, (err) => {
+      if (err) throw err;
+      console.log(`> Web-server ready on http://localhost:${port}`);
+    });
+  })
+  .catch((ex) => {
+    console.error(ex.stack);
+    process.exit(1);
+  });
 
 // ----- Bot Info -------------------------------------------------------------
 const { token, ownerID, prefix } = JSON.parse(fs.readFileSync('./secret/config.json'));
 console.log(`Using Discord bot API token: ${token}`);
 console.log(`OwnerID is set as: ${ownerID}`);
+console.log(`Current bot prefix is: ${prefix}`);
 
 // ----- Mongo Init -----------------------------------------------------------
 const { MongoClient } = mongo;

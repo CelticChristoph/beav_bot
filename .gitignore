@@ -7,3 +7,6 @@ node_modules/
 
 # Wouldn't wanna give away your secrets, would you?
 secret/
+
+# NextJS stuff
+.next/
