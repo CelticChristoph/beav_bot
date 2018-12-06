@@ -6,7 +6,7 @@ const fs = require('fs');
 const express = require('express');
 
 // Body-parser to handle incoming POST requests
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 
 // Next.js
 const next = require('next');
@@ -92,8 +92,19 @@ mdbClient.connect((err) => {
 });
 
 // ----- Shared Functions------------------------------------------------------
-function addUser() {
-  mdb.collection('users').insertOne({ a: 1 }, (err, r) => {
+function findUser(uuid) {
+  const query = { uuid };
+  mdb.collection('users').find(query).toArray((err, result) => {
+    if (err) throw err;
+    console.log(`${result.length} `);
+    console.log(result);
+  });
+}
+
+function addUser(uuid, first, last, onid, field, status) {
+  mdb.collection('users').insertOne({
+    uuid, first, last, onid, field, status,
+  }, (err, r) => {
     assert.equal(null, err);
     assert.equal(1, r.insertedCount);
   });
@@ -146,6 +157,17 @@ async function embedXKCD(num) {
   return embed;
 }
 
+function sendRegistration(msg) {
+  console.log(msg.author.id);
+
+  msg.author.createDM()
+    .then(dmChan => dmChan.send(`Hey there! Thanks for your interest in OSU EECS Discord channel.\n
+    To register for the server, please visit http://71.193.188.235:8080/r/${msg.author.id} \n
+    We look forward to chatting with you!`))
+    .then(test => console.log(test))
+    .catch(console.error);
+}
+
 async function parseCommand(msg) {
   const split = msg.content.substr(1).split(' ');
   const command = split[0];
@@ -154,8 +176,32 @@ async function parseCommand(msg) {
     msg.reply('Pong!');
   }
 
-  if (command === 'demo') {
-    console.log(msg);
+  if (command === 'register') {
+    sendRegistration(msg);
+  }
+
+  if (command === 'find') {
+    if (msg.author.id !== ownerID) {
+      console.log('Bad access!');
+      return;
+    }
+    findUser(split[1]);
+  }
+
+  if (command === 'demoRegister') {
+    if (msg.author.id !== ownerID) {
+      console.log('Bad access!');
+      return;
+    }
+    split.shift();
+    console.log(msg.author.id);
+    console.log(split[0]);
+    console.log(split[1]);
+    console.log(split[2]);
+    console.log(split[3]);
+    console.log(split[4]);
+
+    addUser(msg.author.id, split[0], split[1], split[2], split[3], split[4]);
   }
 
   if (command === 'xkcd') {
@@ -177,13 +223,8 @@ async function parseCommand(msg) {
   }
 }
 
-discClient.on('ready', () => {
-  console.log(`Logged in as ${discClient.user.tag}!`);
-});
-
 discClient.on('message', (msg) => {
   const message = msg.content.toLowerCase();
-  console.log(message);
   if (msg.author === discClient.user) { return -1; }
 
   if (msg.isMentioned(discClient.user)) {
@@ -200,4 +241,8 @@ discClient.on('message', (msg) => {
   return -1;
 });
 
-// discClient.login(token);
+discClient.on('ready', () => {
+  console.log(`Logged in as ${discClient.user.tag}!`);
+});
+
+discClient.login(token);
