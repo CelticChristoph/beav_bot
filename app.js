@@ -5,6 +5,9 @@ const fs = require('fs');
 // Web server
 const express = require('express');
 
+// Body-parser to handle incoming POST requests
+const bodyParser = require('body-parser');
+
 // Next.js
 const next = require('next');
 
@@ -35,6 +38,17 @@ const discClient = new Client();
 nextApp.prepare()
   .then(() => {
     const server = express();
+
+    server.post('/register', (req, res) => {
+      console.log(req);
+      return { res };
+    });
+    server.get('/r/:id', (req, res) => {
+      const actualPage = '/register';
+      const queryParams = { uuid: req.params.id };
+      console.log(queryParams);
+      nextApp.render(req, res, actualPage, queryParams);
+    });
 
     server.get('*', (req, res) => handle(req, res));
 
