@@ -46,7 +46,7 @@ nextApp.prepare()
     server.get('/r/:id', (req, res) => {
       const actualPage = '/register';
       const queryParams = { uuid: req.params.id };
-      console.log(queryParams);
+      // console.log(queryParams);
       nextApp.render(req, res, actualPage, queryParams);
     });
 
@@ -245,4 +245,4 @@ discClient.on('ready', () => {
   console.log(`Logged in as ${discClient.user.tag}!`);
 });
 
-discClient.login(token);
+// discClient.login(token);
